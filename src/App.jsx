@@ -13,7 +13,8 @@ import { db } from "./firebase";
 
 const CodePlayground = () => {
   const [darkMode, setDarkMode] = useState(true);
-  const [code, setCode] = useState('function greet() {\n  console.log("Ref. Code in -> Share. Same code -> Load.");\n}\n\ngreet();');
+
+  const [code, setCode] = useState('// Write your code here...\n// Ref. Code can be overriden, choose wisely\n\nfunction greet() {\n  console.log("Ref. Code in -> Share. Same code -> Load.");\n}\n\ngreet();\n');
   const [referenceCode, setReferenceCode] = useState('');
   const [isCopied, setIsCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
