@@ -8,12 +8,12 @@ import 'rc-slider/assets/index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { db } from "./firebase"; // your Firebase config file
+import { db } from "./firebase";
 
 
 const CodePlayground = () => {
   const [darkMode, setDarkMode] = useState(true);
-  const [code, setCode] = useState('// Write your code here...\n// Ref. Code can be overriden, choose wisely\n\nfunction greet() {\n  console.log("Ref. Code in -> Share. Same code -> Load.");\n}\n\ngreet();');
+  const [code, setCode] = useState('function greet() {\n  console.log("Ref. Code in -> Share. Same code -> Load.");\n}\n\ngreet();');
   const [referenceCode, setReferenceCode] = useState('');
   const [isCopied, setIsCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +25,6 @@ const CodePlayground = () => {
 
   console.log(import.meta.env.VITE_FIREBASE_API_KEY);
 
-  // Update editor height when window resizes
   useEffect(() => {
     const updateHeight = () => {
       if (editorContainerRef.current) {
@@ -39,7 +38,7 @@ const CodePlayground = () => {
     return () => window.removeEventListener('resize', updateHeight);
   }, []);
 
-  // Custom toast styles
+ 
   const toastTheme = {
     dark: {
       background: '#3C3836',
@@ -55,7 +54,6 @@ const CodePlayground = () => {
     }
   };
 
-  // Chocolate dark theme
   const chocolateTheme = {
     base: 'vs-dark',
     inherit: true,
@@ -96,7 +94,6 @@ const CodePlayground = () => {
 
     setIsLoading(true);
 
-    // Show loading notification
     const toastId = toast.loading('Sharing your code...', {
       position: "bottom-left",
       theme: darkMode ? 'dark' : 'light',
@@ -107,7 +104,6 @@ const CodePlayground = () => {
     });
 
     try {
-      // Save code to Firestore (referenceCode is the doc ID)
       await setDoc(doc(db, "snippets", referenceCode), {
         code: code,
         createdAt: new Date()
@@ -268,7 +264,6 @@ const CodePlayground = () => {
 
   return (
     <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-[#1D2021] text-[#D4BE98]' : 'bg-[#F9F5D7] text-[#3C3836]'}`}>
-      {/* Toast Notifications */}
       <ToastContainer
         position="bottom-left"
         autoClose={3000}
@@ -289,7 +284,6 @@ const CodePlayground = () => {
         }}
       />
 
-      {/* Navbar */}
       <nav className="px-4 sm:px-6 py-4 border-b border-[#3C3836]">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <motion.div 
@@ -315,10 +309,8 @@ const CodePlayground = () => {
         </div>
       </nav>
 
-      {/* Main Playground Area */}
       <main className="flex-1 flex overflow-hidden px-4 sm:px-6 py-4 sm:py-6 max-w-7xl w-full mx-auto">
         <div className="flex flex-col lg:flex-row flex-1 h-full gap-4 sm:gap-6">
-          {/* Left Panel - Code Editor */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -346,7 +338,6 @@ const CodePlayground = () => {
               </motion.button>
             </div>
 
-            {/* Editor Container with proper height */}
             <div className="flex-1 overflow-hidden rounded-lg border border-[#3C3836] shadow-lg">
               <Editor
                 height={`${editorHeight - 60}px`}
@@ -370,7 +361,6 @@ const CodePlayground = () => {
             </div>
           </motion.div>
 
-          {/* Right Panel - Settings/Controls */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -382,9 +372,7 @@ const CodePlayground = () => {
               <h2 className="font-['Inter'] font-medium text-sm sm:text-base">Playground Controls</h2>
             </div>
 
-            {/* Settings Card */}
             <div className={`p-4 sm:p-6 rounded-lg border ${darkMode ? 'bg-[#282828] border-[#3C3836]' : 'bg-[#EBDBB2] border-[#D5C4A1]'} shadow-lg flex-1 flex flex-col`}>
-              {/* Editor Settings */}
               <div className="mb-6">
                 <h3 className="font-['Inter'] font-medium mb-3 text-sm sm:text-base">Editor Settings</h3>
                 <div className="space-y-4">
