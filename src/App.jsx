@@ -6,6 +6,7 @@ import Slider from 'rc-slider';
 import { toast, ToastContainer } from 'react-toastify';
 import 'rc-slider/assets/index.css';
 import 'react-toastify/dist/ReactToastify.css';
+import langDetector from 'lang-detector';
 
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "./firebase";
@@ -13,7 +14,7 @@ import { db } from "./firebase";
 
 const CodePlayground = () => {
   const [darkMode, setDarkMode] = useState(true);
-
+  const [language, setLanguage] = useState('javascript');
   const [code, setCode] = useState('// Write your code here...\n// Ref. Code can be overriden, choose wisely\n\nfunction greet() {\n  console.log("Ref. Code in -> Share. Same code -> Load.");\n}\n\ngreet();\n');
   const [referenceCode, setReferenceCode] = useState('');
   const [isCopied, setIsCopied] = useState(false);
@@ -22,9 +23,6 @@ const CodePlayground = () => {
   const [wordWrap, setWordWrap] = useState(true);
   const editorContainerRef = useRef(null);
   const [editorHeight, setEditorHeight] = useState(500);
-
-
-  console.log(import.meta.env.VITE_FIREBASE_API_KEY);
 
   useEffect(() => {
     const updateHeight = () => {
@@ -38,6 +36,27 @@ const CodePlayground = () => {
     window.addEventListener('resize', updateHeight);
     return () => window.removeEventListener('resize', updateHeight);
   }, []);
+
+  useEffect(() => {
+    let detected = langDetector(code).toLowerCase();
+
+    // console.log(detected, detected == 'c');
+    if (detected == 'c' &&
+      (
+        code.includes('std::') ||
+        code.includes('#include <iostream>') ||
+        code.includes('namespace') ||
+        code.includes('class ') ||
+        code.includes('cout') ||
+        code.includes('cin')
+      )
+    ) {
+      detected = 'cpp';
+    }
+
+    // console.log(detected);
+    setLanguage(detected);
+  }, [code]);
 
  
   const toastTheme = {
@@ -342,7 +361,8 @@ const CodePlayground = () => {
             <div className="flex-1 overflow-hidden rounded-lg border border-[#3C3836] shadow-lg">
               <Editor
                 height={`${editorHeight - 60}px`}
-                defaultLanguage="javascript"
+                defaultLanguage='javascript'
+                language={language}
                 theme={darkMode ? 'chocolate' : 'light'}
                 value={code}
                 onChange={(value) => setCode(value || '')}
